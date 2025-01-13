@@ -17,5 +17,21 @@
         <Label Text="{Binding ReservedSpots}" />
         <Label Text="Max Participants:" FontAttributes="Bold" />
         <Label Text="{Binding MaxParticipants}" />
+
+        <!-- Reserve Spot Button -->
+        <Button Text="Reserve Spot" Clicked="OnReserveSpotClicked" />
+
+        <!-- Participants List -->
+        <Label Text="Participants:" FontAttributes="Bold" FontSize="20" />
+        <ListView x:Name="ParticipantsListView"
+                  ItemsSource="{Binding Participants}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Name}" Detail="{Binding Email}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button Text="Cancel Reservation" Clicked="OnCancelReservationClicked" />
+
     </StackLayout>
 </ContentPage>
