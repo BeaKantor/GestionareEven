@@ -28,7 +28,7 @@ namespace GestionareEven
         {
             InitializeComponent();
 
-            MainPage = new NavigationPage(new MainPage());
+            MainPage = new NavigationPage(new Views.EventsPage());
         }
     }
 }

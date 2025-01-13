@@ -1,0 +1,21 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GestionareEven.Views.EventsPage"
+             Title="Events">
+
+
+<ContentPage.ToolbarItems>
+        <!-- Toolbar button to add a new event -->
+        <ToolbarItem Text="Add Event" Clicked="OnAddEventClicked" />
+    </ContentPage.ToolbarItems>
+
+    <!-- ListView to display events -->
+    <ListView x:Name="EventsListView" ItemSelected="OnEventSelected">
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <TextCell Text="{Binding Title}" Detail="{Binding EventDate}" />
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+
+</ContentPage>
