@@ -5,27 +5,43 @@ namespace GestionareEven.Views
 {
     public partial class EventsPage : ContentPage
     {
-        ObservableCollection<Event> events;
+        public ObservableCollection<Event> Events { get; set; }
+        public ObservableCollection<Event> AllEvents { get; set; }
+        public string SelectedCategory { get; set; }
 
         public EventsPage()
         {
             InitializeComponent();
+            BindingContext = this;
 
             Appearing += async (sender, e) =>
             {
-                // Load events from database
                 var eventsFromDb = await App.Database.GetEventsAsync();
-                Console.WriteLine($"Loaded {eventsFromDb.Count} events.");
-                events = new ObservableCollection<Event>(eventsFromDb);
-
-                // Bind events to the ListView
-                EventsListView.ItemsSource = events;
+                AllEvents = new ObservableCollection<Event>(eventsFromDb);
+                Events = new ObservableCollection<Event>(AllEvents);
+                EventsListView.ItemsSource = Events;
             };
+        }
+
+        private void FilterEvents()
+        {
+            if (SelectedCategory == "All" || string.IsNullOrWhiteSpace(SelectedCategory))
+            {
+                Events.Clear();
+                foreach (var evnt in AllEvents)
+                    Events.Add(evnt);
+            }
+            else
+            {
+                var filteredEvents = AllEvents.Where(e => e.Category == SelectedCategory).ToList();
+                Events.Clear();
+                foreach (var evnt in filteredEvents)
+                    Events.Add(evnt);
+            }
         }
 
         async void OnAddEventClicked(object sender, EventArgs e)
         {
-            // Navigate to AddEditEventPage with a new Event object
             await Navigation.PushAsync(new AddEditEventPage
             {
                 BindingContext = new Event()
@@ -36,15 +52,24 @@ namespace GestionareEven.Views
         {
             if (e.SelectedItem is Event selectedEvent)
             {
-                // Navigate to AddEditEventPage with the selected Event
                 await Navigation.PushAsync(new AddEditEventPage
                 {
                     BindingContext = selectedEvent
                 });
             }
 
-            // Clear selection to avoid issues
-            ((ListView)sender).SelectedItem = null;
+            EventsListView.SelectedItem = null;
+        }
+
+        async void OnDetailsClicked(object sender, EventArgs e)
+        {
+            if ((sender as Button)?.CommandParameter is Event selectedEvent)
+            {
+                await Navigation.PushAsync(new EventDetailsPage
+                {
+                    BindingContext = selectedEvent
+                });
+            }
         }
     }
 }

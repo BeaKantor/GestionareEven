@@ -32,6 +32,12 @@ namespace GestionareEven.Data
         public Task<int> SaveEventAsync(Event evnt) => evnt.ID != 0 ? _database.UpdateAsync(evnt) : _database.InsertAsync(evnt);
         public Task<int> DeleteEventAsync(Event evnt) => _database.DeleteAsync(evnt);
 
+        // Get a single Event by ID
+        public Task<Event> GetEventByIdAsync(int id)
+        {
+            return _database.Table<Event>().FirstOrDefaultAsync(e => e.ID == id);
+        }
+
         // CRUD operations for Notification
         public Task<List<Notification>> GetNotificationsAsync() => _database.Table<Notification>().ToListAsync();
         public Task<int> SaveNotificationAsync(Notification notification) => notification.ID != 0 ? _database.UpdateAsync(notification) : _database.InsertAsync(notification);

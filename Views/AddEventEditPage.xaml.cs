@@ -1,4 +1,6 @@
 using GestionareEven.Models;
+using Plugin.LocalNotification;
+using System;
 
 namespace GestionareEven.Views
 {
@@ -12,15 +14,30 @@ namespace GestionareEven.Views
         async void OnSaveClicked(object sender, EventArgs e)
         {
             var evnt = (Event)BindingContext;
+
+            // Validate title and location
+            if (string.IsNullOrWhiteSpace(evnt.Title))
+            {
+                await DisplayAlert("Error", "Please provide a title.", "OK");
+                return;
+            }
+
+            // Save the event to the database
             await App.Database.SaveEventAsync(evnt);
+
             await Navigation.PopAsync();
         }
 
         async void OnDeleteClicked(object sender, EventArgs e)
         {
             var evnt = (Event)BindingContext;
-            await App.Database.DeleteEventAsync(evnt);
+
+            if (evnt.ID != 0)
+            {
+                await App.Database.DeleteEventAsync(evnt);
+            }
             await Navigation.PopAsync();
         }
+
     }
 }

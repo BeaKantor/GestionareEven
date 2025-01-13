@@ -1,12 +1,33 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GestionareEven.Views.AddEditEventPage"
              Title="Add/Edit Event">
     <StackLayout Padding="20">
         <Entry Placeholder="Event Title" Text="{Binding Title}" />
-        <Editor Placeholder="Event Description" Text="{Binding Description}" HeightRequest="100" />
+        <Editor Placeholder="Description" Text="{Binding Description}" HeightRequest="100" />
+
+        <!-- DatePicker for Event Date -->
         <DatePicker Date="{Binding EventDate}" />
+
+        <!-- TimePicker for Event Time -->
+        <TimePicker Time="{Binding EventTime}" />
+
+        <Entry Placeholder="Location" Text="{Binding Location}" />
+
+        <Picker Title="Category" SelectedItem="{Binding Category}">
+            <Picker.ItemsSource>
+                <x:Array Type="{x:Type x:String}">
+                    <x:String>Workshops</x:String>
+                    <x:String>Meetings</x:String>
+                    <x:String>Celebrations</x:String>
+                    <x:String>Team Building</x:String>
+                    <x:String>Road Trips</x:String>
+                </x:Array>
+            </Picker.ItemsSource>
+        </Picker>
+
+        <Entry Placeholder="Max Participants" Keyboard="Numeric" Text="{Binding MaxParticipants}" />
+
         <Button Text="Save" Clicked="OnSaveClicked" />
         <Button Text="Delete" Clicked="OnDeleteClicked" />
     </StackLayout>

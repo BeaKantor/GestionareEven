@@ -2,20 +2,48 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GestionareEven.Views.EventsPage"
              Title="Events">
+    <StackLayout Padding="20">
+        <!-- Header -->
+        <Label Text="Event Manager" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
 
+        <!-- Category Filter -->
+        <Picker Title="Filter by Category"
+                SelectedItem="{Binding SelectedCategory}">
+            <Picker.ItemsSource>
+                <x:Array Type="{x:Type x:String}">
+                    <x:String>All</x:String>
+                    <x:String>Workshops</x:String>
+                    <x:String>Meetings</x:String>
+                    <x:String>Celebrations</x:String>
+                    <x:String>Team Building</x:String>
+                    <x:String>Road Trips</x:String>
+                </x:Array>
+            </Picker.ItemsSource>
+        </Picker>
 
-<ContentPage.ToolbarItems>
-        <!-- Toolbar button to add a new event -->
-        <ToolbarItem Text="Add Event" Clicked="OnAddEventClicked" />
-    </ContentPage.ToolbarItems>
+        <!-- Events List -->
+        <ListView x:Name="EventsListView"
+                  ItemsSource="{Binding Events}"
+                  ItemSelected="OnEventSelected">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Orientation="Vertical" Padding="10">
+                            <!-- Event Info -->
+                            <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold" />
+                            <Label Text="{Binding EventDate, StringFormat='{}{0:MMM dd, yyyy}'}" FontSize="14" TextColor="Gray" />
+                            <Label Text="{Binding EventTime, StringFormat='{}{0:hh\\:mm tt}'}" FontSize="14" TextColor="Gray" />
+                            <Label Text="{Binding Location}" FontSize="14" TextColor="Gray" />
 
-    <!-- ListView to display events -->
-    <ListView x:Name="EventsListView" ItemSelected="OnEventSelected">
-        <ListView.ItemTemplate>
-            <DataTemplate>
-                <TextCell Text="{Binding Title}" Detail="{Binding EventDate}" />
-            </DataTemplate>
-        </ListView.ItemTemplate>
-    </ListView>
+                            <!-- Details Button -->
+                            <Button Text="Details" Clicked="OnDetailsClicked" CommandParameter="{Binding .}" />
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
+        <!-- Add Event Button -->
+        <Button Text="Add Event" Clicked="OnAddEventClicked" HorizontalOptions="Center" VerticalOptions="EndAndExpand" />
+    </StackLayout>
 </ContentPage>
