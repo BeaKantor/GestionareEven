@@ -52,14 +52,26 @@ namespace GestionareEven.Views
         {
             if (e.SelectedItem is Event selectedEvent)
             {
-                await Navigation.PushAsync(new AddEditEventPage
+                // Check if the logged-in user is the creator of the event
+                if (App.CurrentUser?.ID == selectedEvent.CreatorID)
                 {
-                    BindingContext = selectedEvent
-                });
-            }
+                    // Navigate to the editing page if the user is the creator
+                    await Navigation.PushAsync(new AddEditEventPage
+                    {
+                        BindingContext = selectedEvent
+                    });
+                }
+                else
+                {
+                    // Do nothing if the user is not the creator
+                    await DisplayAlert("Access Denied", "You can view the event details but cannot edit it.", "OK");
+                }
 
-            EventsListView.SelectedItem = null;
+                // Clear the selection (to avoid re-triggering on the same selection)
+                ((ListView)sender).SelectedItem = null;
+            }
         }
+
 
         async void OnDetailsClicked(object sender, EventArgs e)
         {

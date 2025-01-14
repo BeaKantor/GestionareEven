@@ -9,6 +9,8 @@ namespace GestionareEven.Views
         public ObservableCollection<User> Participants { get; set; }
         public string CreatorEmail { get; set; } // Display the creator's email
         public bool IsCreator { get; set; }      // Control edit/delete button visibility
+        public bool CanReserve { get; set; }    // Control the visibility of Reserve Spot button
+        public bool CanCancelReservation { get; set; } // Control the visibility of Cancel Reservation button
 
         public EventDetailsPage()
         {
@@ -20,7 +22,7 @@ namespace GestionareEven.Views
         {
             base.OnAppearing();
 
-            var evnt = (Event)BindingContext; // Get the current event bound to the page
+            var evnt = (Event)BindingContext;
 
             // Load participants for the event
             var participants = await App.Database.GetParticipantsAsync();
@@ -35,34 +37,38 @@ namespace GestionareEven.Views
             var creator = users.FirstOrDefault(u => u.ID == evnt.CreatorID);
             CreatorEmail = creator?.Email ?? "Unknown";
 
-            // Determine if the logged-in user is the creator of the event
+            // Determine if the logged-in user is the creator
             IsCreator = App.CurrentUser?.ID == evnt.CreatorID;
 
-            // Update the UI
+            // Determine if the user can reserve or cancel a reservation
+            var existingParticipant = participants.FirstOrDefault(p => p.EventID == evnt.ID && p.UserID == App.CurrentUser?.ID);
+            CanReserve = App.CurrentUser != null && existingParticipant == null && evnt.ReservedSpots < evnt.MaxParticipants;
+            CanCancelReservation = App.CurrentUser != null && existingParticipant != null;
+
+            // Update UI bindings
             OnPropertyChanged(nameof(Participants));
             OnPropertyChanged(nameof(CreatorEmail));
             OnPropertyChanged(nameof(IsCreator));
+            OnPropertyChanged(nameof(CanReserve));
+            OnPropertyChanged(nameof(CanCancelReservation));
         }
 
         async void OnReserveSpotClicked(object sender, EventArgs e)
         {
             var evnt = (Event)BindingContext;
 
-            // Ensure the logged-in user is valid
             if (App.CurrentUser == null)
             {
-                await DisplayAlert("Error", "No user is logged in. Please log in first.", "OK");
+                await DisplayAlert("Error", "You must log in to reserve a spot.", "OK");
                 return;
             }
 
-            // Check if there are available spots
             if (evnt.ReservedSpots >= evnt.MaxParticipants)
             {
-                await DisplayAlert("Error", "No spots available for this event.", "OK");
+                await DisplayAlert("Error", "No spots available.", "OK");
                 return;
             }
 
-            // Check if the current user has already reserved a spot
             var existingParticipant = (await App.Database.GetParticipantsAsync())
                 .FirstOrDefault(p => p.EventID == evnt.ID && p.UserID == App.CurrentUser.ID);
 
@@ -85,19 +91,21 @@ namespace GestionareEven.Views
             evnt.ReservedSpots++;
             await App.Database.SaveEventAsync(evnt);
 
+            // Add the user to the participant list
+            Participants.Add(App.CurrentUser);
+
             OnAppearing(); // Refresh participants list
 
-            await DisplayAlert("Success", "You have reserved a spot!", "OK");
+            await DisplayAlert("Success", "Spot reserved successfully.", "OK");
         }
 
         async void OnCancelReservationClicked(object sender, EventArgs e)
         {
             var evnt = (Event)BindingContext;
 
-            // Ensure the logged-in user is valid
             if (App.CurrentUser == null)
             {
-                await DisplayAlert("Error", "No user is logged in. Please log in first.", "OK");
+                await DisplayAlert("Error", "You must log in to cancel a reservation.", "OK");
                 return;
             }
 
@@ -106,7 +114,7 @@ namespace GestionareEven.Views
 
             if (participant == null)
             {
-                await DisplayAlert("Error", "You do not have a reservation for this event.", "OK");
+                await DisplayAlert("Error", "No reservation to cancel.", "OK");
                 return;
             }
 
@@ -116,43 +124,16 @@ namespace GestionareEven.Views
             evnt.ReservedSpots--;
             await App.Database.SaveEventAsync(evnt);
 
+            // Remove the user from the participant list
+            var userToRemove = Participants.FirstOrDefault(u => u.ID == App.CurrentUser.ID);
+            if (userToRemove != null)
+            {
+                Participants.Remove(userToRemove);
+            }
+
             OnAppearing(); // Refresh participants list
 
-            await DisplayAlert("Success", "Your reservation has been canceled.", "OK");
-        }
-
-        async void OnEditClicked(object sender, EventArgs e)
-        {
-            var evnt = (Event)BindingContext;
-
-            if (!IsCreator)
-            {
-                await DisplayAlert("Error", "Only the creator can edit this event.", "OK");
-                return;
-            }
-
-            await Navigation.PushAsync(new AddEditEventPage
-            {
-                BindingContext = evnt
-            });
-        }
-
-        async void OnDeleteClicked(object sender, EventArgs e)
-        {
-            var evnt = (Event)BindingContext;
-
-            if (!IsCreator)
-            {
-                await DisplayAlert("Error", "Only the creator can delete this event.", "OK");
-                return;
-            }
-
-            bool confirm = await DisplayAlert("Delete", "Are you sure you want to delete this event?", "Yes", "No");
-            if (confirm)
-            {
-                await App.Database.DeleteEventAsync(evnt);
-                await Navigation.PopAsync(); // Navigate back after deletion
-            }
+            await DisplayAlert("Success", "Reservation canceled successfully.", "OK");
         }
     }
 }
