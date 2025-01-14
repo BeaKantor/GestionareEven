@@ -1,0 +1,20 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GestionareEven.Views.LoginPage"
+             Title="Login">
+    <StackLayout Padding="20" Spacing="15">
+        <Label Text="Login" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
+
+        <!-- Email Entry -->
+        <Entry Placeholder="Email" x:Name="EmailEntry" Keyboard="Email" />
+
+        <!-- Password Entry -->
+        <Entry Placeholder="Password" x:Name="PasswordEntry" IsPassword="True" />
+
+        <!-- Login Button -->
+        <Button Text="Login" Clicked="OnLoginClicked" />
+
+        <!-- Navigate to Signup -->
+        <Button Text="Sign Up" Clicked="OnSignUpClicked" />
+    </StackLayout>
+</ContentPage>

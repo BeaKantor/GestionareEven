@@ -2,36 +2,53 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GestionareEven.Views.EventDetailsPage"
              Title="Event Details">
-    <StackLayout Padding="20">
-        <Label Text="{Binding Title}" FontSize="24" FontAttributes="Bold" />
-        <Label Text="{Binding Description}" FontSize="18" />
+    <StackLayout Padding="20" Spacing="10">
+        <Label Text="Event Details" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
+
+        <!-- Event Details -->
+        <Label Text="{Binding Title}" FontSize="20" FontAttributes="Bold" />
+        <Label Text="{Binding Description}" FontSize="16" TextColor="Gray" />
+
         <Label Text="Date:" FontAttributes="Bold" />
         <Label Text="{Binding EventDate, StringFormat='{}{0:MMM dd, yyyy}'}" />
+
         <Label Text="Time:" FontAttributes="Bold" />
         <Label Text="{Binding EventTime, StringFormat='{}{0:hh\\:mm tt}'}" />
+
         <Label Text="Location:" FontAttributes="Bold" />
         <Label Text="{Binding Location}" />
+
         <Label Text="Category:" FontAttributes="Bold" />
         <Label Text="{Binding Category}" />
+
         <Label Text="Reserved Spots:" FontAttributes="Bold" />
         <Label Text="{Binding ReservedSpots}" />
+
         <Label Text="Max Participants:" FontAttributes="Bold" />
         <Label Text="{Binding MaxParticipants}" />
 
-        <!-- Reserve Spot Button -->
-        <Button Text="Reserve Spot" Clicked="OnReserveSpotClicked" />
+        <!-- Creator Info -->
+        <Label Text="Created By:" FontAttributes="Bold" />
+        <Label Text="{Binding CreatorEmail}" />
 
         <!-- Participants List -->
-        <Label Text="Participants:" FontAttributes="Bold" FontSize="20" />
-        <ListView x:Name="ParticipantsListView"
-                  ItemsSource="{Binding Participants}">
+        <Label Text="Participants:" FontAttributes="Bold" FontSize="18" />
+        <ListView x:Name="ParticipantsListView" ItemsSource="{Binding Participants}" HeightRequest="150">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextCell Text="{Binding Name}" Detail="{Binding Email}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Button Text="Cancel Reservation" Clicked="OnCancelReservationClicked" />
 
+        <!-- Edit and Delete Buttons -->
+        <StackLayout Orientation="Horizontal" IsVisible="{Binding IsCreator}">
+            <Button Text="Edit" Clicked="OnEditClicked" />
+            <Button Text="Delete" Clicked="OnDeleteClicked" TextColor="Red" />
+        </StackLayout>
+
+        <!-- Reserve and Cancel Buttons -->
+        <Button Text="Reserve Spot" Clicked="OnReserveSpotClicked" />
+        <Button Text="Cancel Reservation" Clicked="OnCancelReservationClicked" />
     </StackLayout>
 </ContentPage>

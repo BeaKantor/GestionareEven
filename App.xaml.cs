@@ -1,11 +1,14 @@
 ﻿using GestionareEven.Data;
 using System.IO;
+using GestionareEven.Models;
+using GestionareEven.Views;
 
 namespace GestionareEven
 {
     public partial class App : Application
     {
         private static EventDatabase _database;
+        public static User CurrentUser { get; set; } // Add this property
 
         public static EventDatabase Database
         {
@@ -24,11 +27,14 @@ namespace GestionareEven
             }
         }
 
+
+
         public App()
         {
             InitializeComponent();
 
-            MainPage = new NavigationPage(new Views.EventsPage());
+            MainPage = new NavigationPage(new LoginPage());
+
         }
     }
 }

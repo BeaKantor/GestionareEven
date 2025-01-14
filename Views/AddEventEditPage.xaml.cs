@@ -15,18 +15,15 @@ namespace GestionareEven.Views
         {
             var evnt = (Event)BindingContext;
 
-            // Validate title and location
-            if (string.IsNullOrWhiteSpace(evnt.Title))
+            if (evnt.ID == 0) // New Event
             {
-                await DisplayAlert("Error", "Please provide a title.", "OK");
-                return;
+                evnt.CreatorID = App.CurrentUser.ID; // Set the current user as the creator
             }
 
-            // Save the event to the database
             await App.Database.SaveEventAsync(evnt);
-
             await Navigation.PopAsync();
         }
+
 
         async void OnDeleteClicked(object sender, EventArgs e)
         {

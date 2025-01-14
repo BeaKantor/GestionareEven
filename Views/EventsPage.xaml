@@ -2,13 +2,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GestionareEven.Views.EventsPage"
              Title="Events">
-    <StackLayout Padding="20">
+    <StackLayout Padding="20" Spacing="15">
         <!-- Header -->
         <Label Text="Event Manager" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
 
+        <!-- My Reservations Button -->
+        <Button Text="My Reservations" Clicked="OnMyReservationsClicked" />
+
+        <!-- Logout Button -->
+        <Button Text="Logout" Clicked="OnLogoutClicked" HorizontalOptions="Center" />
+
         <!-- Category Filter -->
         <Picker Title="Filter by Category"
-                SelectedItem="{Binding SelectedCategory}">
+                SelectedIndexChanged="OnCategorySelected">
             <Picker.ItemsSource>
                 <x:Array Type="{x:Type x:String}">
                     <x:String>All</x:String>
@@ -28,14 +34,12 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <StackLayout Orientation="Vertical" Padding="10">
-                            <!-- Event Info -->
+                        <StackLayout Padding="10">
                             <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold" />
-                            <Label Text="{Binding EventDate, StringFormat='{}{0:MMM dd, yyyy}'}" FontSize="14" TextColor="Gray" />
-                            <Label Text="{Binding EventTime, StringFormat='{}{0:hh\\:mm tt}'}" FontSize="14" TextColor="Gray" />
-                            <Label Text="{Binding Location}" FontSize="14" TextColor="Gray" />
-
-                            <!-- Details Button -->
+                            <Label Text="{Binding Description}" FontSize="14" TextColor="Gray" />
+                            <Label Text="{Binding EventDate, StringFormat='{}{0:MMM dd, yyyy}'}" FontSize="14" TextColor="Blue" />
+                            <Label Text="{Binding EventTime, StringFormat='{}{0:hh\\:mm tt}'}" FontSize="14" TextColor="Green" />
+                            <!-- Move the Details Button into the StackLayout -->
                             <Button Text="Details" Clicked="OnDetailsClicked" CommandParameter="{Binding .}" />
                         </StackLayout>
                     </ViewCell>

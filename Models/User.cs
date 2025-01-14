@@ -5,12 +5,16 @@ namespace GestionareEven.Models
     public class User
     {
         [PrimaryKey, AutoIncrement]
-        public int ID { get; set; }  // Unique user ID
+        public int ID { get; set; }
 
         [MaxLength(100)]
-        public string Name { get; set; } // User name
+        public string Name { get; set; }
 
         [MaxLength(150)]
-        public string Email { get; set; } // User email
+        public string Email { get; set; }
+
+        [MaxLength(100)]
+        public string Password { get; set; } // Add this property
     }
+
 }

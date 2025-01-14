@@ -1,0 +1,11 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GestionareEven.Views.SignUpPage"
+             Title="Sign Up">
+    <StackLayout Padding="20" Spacing="15">
+        <Entry Placeholder="Name" x:Name="NameEntry" />
+        <Entry Placeholder="Email" x:Name="EmailEntry" Keyboard="Email" />
+        <Entry Placeholder="Password" x:Name="PasswordEntry" IsPassword="True" />
+        <Button Text="Sign Up" Clicked="OnSignUpClicked" />
+    </StackLayout>
+</ContentPage>

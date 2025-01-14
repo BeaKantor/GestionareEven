@@ -71,5 +71,48 @@ namespace GestionareEven.Views
                 });
             }
         }
+        async void OnMyReservationsClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new MyReservationsPage());
+        }
+        async void OnLogoutClicked(object sender, EventArgs e)
+        {
+            bool confirm = await DisplayAlert("Logout", "Are you sure you want to log out?", "Yes", "No");
+            if (confirm)
+            {
+                // Clear the current user session
+                App.CurrentUser = null;
+
+                // Navigate back to the LoginPage
+                Application.Current.MainPage = new NavigationPage(new LoginPage());
+            }
+        }
+        async void OnCategorySelected(object sender, EventArgs e)
+        {
+            // Get the selected category
+            var picker = (Picker)sender;
+            string selectedCategory = picker.SelectedItem?.ToString();
+
+            // Fetch all events
+            var allEvents = await App.Database.GetEventsAsync();
+
+            // Filter events by the selected category
+            if (!string.IsNullOrEmpty(selectedCategory) && selectedCategory != "All")
+            {
+                Events = new ObservableCollection<Event>(
+                    allEvents.Where(e => e.Category == selectedCategory)
+                );
+            }
+            else
+            {
+                Events = new ObservableCollection<Event>(allEvents); // Show all events if "All" is selected
+            }
+
+            // Update the EventsListView
+            EventsListView.ItemsSource = Events;
+        }
+
+
+
     }
 }
